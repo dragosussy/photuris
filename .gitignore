@@ -334,7 +334,7 @@ ASALocalRun/
 .localhistory/
 
 # Configuration Files
-appsettings.*json
+appsettings*.json
 
 ## .gitignore for Vue.js
 ##
