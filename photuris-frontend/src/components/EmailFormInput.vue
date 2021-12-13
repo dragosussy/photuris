@@ -5,7 +5,7 @@
             v-model="email"
             name="email"
             label="email"
-            validation="required|email"
+            :validation="[['required'], ['email']]"
             :validation-messages="emailValidationMapper"
             error-behavior="blur"
         />
