@@ -1,15 +1,22 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import VueFormulate from '@braid/vue-formulate'
 
 import App from './App.vue'
-import Test from './pages/Test.vue'
+import Login from './pages/Login.vue'
 
-Vue.config.productionTip = false
+import './style/formulate.min.css';
+import endpoints from './endpoints.json'
+
+Vue.config.productionTip = false;
 Vue.use(VueRouter);
+Vue.use(VueFormulate);
+
+window.endpoints = endpoints;
 
 const routes = [
-  { path: '/', component: Test },
-  // { path: '/login', component: Login },
+  { path: '/', component: Login },
+  { path: '/login', component: Login },
 ];
 const router = new VueRouter({
   routes: routes,
@@ -22,4 +29,4 @@ new Vue({
     App
   },
   render: h => h(App),
-}).$mount('#app')
+}).$mount('#app');

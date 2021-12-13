@@ -1,0 +1,3 @@
+{
+    "loginApi": "https://localhost:7262/api/authentication/login/"
+}
