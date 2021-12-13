@@ -359,3 +359,5 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+photuris-backend/photuris-backend/appsettings.Development.json
+photuris-backend/photuris-backend/appsettings.json
