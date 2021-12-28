@@ -6,6 +6,7 @@ namespace photuris_backend.DbContext
     public class Repository : Microsoft.EntityFrameworkCore.DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Session> Sessions { get; set; }
 
         public Repository(DbContextOptions<Repository> options) : base(options)
         {

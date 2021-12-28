@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography;
 
 namespace photuris_backend.DbContext.Entities
 {
@@ -16,5 +18,11 @@ namespace photuris_backend.DbContext.Entities
         [Required]
         [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{7,}$")]
         public string Password { get; set; }
+
+        [AllowNull]
+        public string PasswordSalt { get; set; }
+
+        [Required]
+        public string HashAlgorithm { get; set; }
     }
 }
