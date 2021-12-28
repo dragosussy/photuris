@@ -1,3 +1,5 @@
 {
-    "loginApi": "https://localhost:7262/api/authentication/login/"
+    "login": "https://localhost:7262/api/authentication/login/",
+    "checkIsLoggedIn": "https://localhost:7262/api/authentication/checkIsLoggedIn",
+    "register": "https://localhost:7262/api/authentication/register/"
 }
