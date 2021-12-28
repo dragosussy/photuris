@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace photuris_backend.DbContext.Entities
 {
@@ -7,10 +7,12 @@ namespace photuris_backend.DbContext.Entities
     {
         [Key]
         public int Id { get; set; }
+        [ForeignKey("User")]
+        public int UserId { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
-        public Blob BinaryImageData { get; set; }
+        public byte[] BinaryImageData { get; set; }
         [Required]
         public DateTime DateCreated { get; set; }
         [Required]

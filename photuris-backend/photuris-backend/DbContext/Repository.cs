@@ -7,6 +7,7 @@ namespace photuris_backend.DbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Session> Sessions { get; set; }
+        public DbSet<Picture> Pictures { get; set; }
 
         public Repository(DbContextOptions<Repository> options) : base(options)
         {
