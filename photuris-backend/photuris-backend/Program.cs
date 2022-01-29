@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<Repository>(options =>
    options.UseSqlServer(builder.Configuration.GetSection("LocalDbConnectionString").Value));
 
-// builder.Services.AddHostedService<ExpiredSessionsCleanerJob>();
+builder.Services.AddHostedService<ExpiredSessionsCleanerJob>();
 
 var app = builder.Build();
 

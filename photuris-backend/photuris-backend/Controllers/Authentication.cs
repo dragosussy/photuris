@@ -14,6 +14,7 @@ namespace photuris_backend
     public class Authentication : ControllerBase
     {
         private readonly Repository _repository;
+        
         public Authentication(Repository repository)
         {
             _repository = repository;
@@ -31,25 +32,35 @@ namespace photuris_backend
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody]UserDataDto loginData)
         {
-            if (!string.IsNullOrEmpty(loginData.SessionToken))
+            try
             {
-                var session = _repository.Sessions.FirstOrDefault(s => s.Token == loginData.SessionToken);
-                if (session != null)
-                    return Ok(new AuthenticationCookie{Token = loginData.SessionToken, ExpirationDate = session.ExpirationDate});
+                if (!string.IsNullOrEmpty(loginData.SessionToken))
+                {
+                    var session = _repository.Sessions.FirstOrDefault(s => s.Token == loginData.SessionToken);
+                    if (session != null)
+                        return Ok(new AuthenticationCookie
+                            {Token = loginData.SessionToken, ExpirationDate = session.ExpirationDate});
+                }
+
+                var user = _repository.Users.FirstOrDefault(u => u.Email == loginData.Email);
+                if (user == null) return StatusCode(StatusCodes.Status401Unauthorized, "user not found.");
+
+                var hashedAndSaltedInputPassword = (user.PasswordSalt + loginData.Password).ApplySha256();
+                if (hashedAndSaltedInputPassword != user.Password)
+                    return StatusCode(StatusCodes.Status401Unauthorized, "invalid password.");
+
+                var sessionToken = Guid.NewGuid().ToString();
+                var sessionExpirationDate = DateTime.Now.AddHours(3);
+                _repository.Sessions.Add(new Session
+                    {Token = sessionToken, UserId = user.Id, ExpirationDate = sessionExpirationDate});
+                await _repository.SaveChangesAsync();
+
+                return Ok(new AuthenticationCookie {Token = sessionToken, ExpirationDate = sessionExpirationDate});
             }
-
-            var user = _repository.Users.FirstOrDefault(u => u.Email == loginData.Email);
-            if (user == null) return StatusCode(StatusCodes.Status401Unauthorized,"user not found.");
-
-            var hashedAndSaltedInputPassword = (user.PasswordSalt + loginData.Password).ApplySha256();
-            if (hashedAndSaltedInputPassword != user.Password) return StatusCode(StatusCodes.Status401Unauthorized, "invalid password.");
-
-            var sessionToken = Guid.NewGuid().ToString();
-            var sessionExpirationDate = DateTime.Now.AddHours(3);
-            _repository.Sessions.Add(new Session {Token = sessionToken, UserId = user.Id, ExpirationDate = sessionExpirationDate });
-            await _repository.SaveChangesAsync();
-
-            return Ok(new AuthenticationCookie {Token = sessionToken, ExpirationDate = sessionExpirationDate });
+            catch (Exception e)
+            {
+                return this.InternalServerError("bad things happened: " + e.Message);
+            }
         }
 
         [HttpPost("Register")]

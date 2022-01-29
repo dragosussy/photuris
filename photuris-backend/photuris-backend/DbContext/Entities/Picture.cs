@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace photuris_backend.DbContext.Entities
 {
-    public class Picture
+    public class Picture : PicturesMetaData
     {
         [Key]
         public int Id { get; set; }
@@ -13,6 +13,10 @@ namespace photuris_backend.DbContext.Entities
         public string Name { get; set; }
         [Required]
         public byte[] BinaryImageData { get; set; }
+    }
+
+    public class PicturesMetaData
+    {
         [Required]
         public DateTime DateCreated { get; set; }
         [Required]

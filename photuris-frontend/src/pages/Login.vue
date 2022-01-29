@@ -49,7 +49,7 @@ export default {
       }).then((response) => {
         if (response.status !== 200) return;
         this.addAuthCookie(response);
-        this.$router.push("/home");
+        this.$router.go(); // refresh page
       });
     },
 

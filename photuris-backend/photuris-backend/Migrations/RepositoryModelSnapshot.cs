@@ -49,7 +49,7 @@ namespace photuris_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Pictures");
+                    b.ToTable("Pictures", (string)null);
                 });
 
             modelBuilder.Entity("photuris_backend.DbContext.Entities.Session", b =>
@@ -72,7 +72,7 @@ namespace photuris_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sessions");
+                    b.ToTable("Sessions", (string)null);
                 });
 
             modelBuilder.Entity("photuris_backend.DbContext.Entities.User", b =>
@@ -101,7 +101,7 @@ namespace photuris_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 #pragma warning restore 612, 618
         }

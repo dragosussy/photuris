@@ -5,14 +5,17 @@
       <button @click="test">Test IsLoggedIn</button>
       <p>{{ testIsLoggedIn }}</p>
     </div> -->
+    <UploadFile />
   </div>
 </template>
 
 <script>
+import UploadFile from "../components/UploadFileInput.vue";
 import LoginUtils from "../utilities/LoginUtils.js";
 
 export default {
   name: "Home",
+  components: { UploadFile },
   data() {
     return {
       testIsLoggedIn: false,
