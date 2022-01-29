@@ -32,6 +32,9 @@ namespace photuris_backend
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody]UserDataDto loginData)
         {
+            if (loginData.Password.IsNullOrEmpty() || loginData.Email.IsNullOrEmpty())
+                return StatusCode(StatusCodes.Status401Unauthorized, "invalid credentials.");
+
             try
             {
                 if (!string.IsNullOrEmpty(loginData.SessionToken))
@@ -66,7 +69,7 @@ namespace photuris_backend
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserDataDto registerData)
         {
-            if(string.IsNullOrEmpty(registerData.Email) || string.IsNullOrEmpty(registerData.Password)) return StatusCode(StatusCodes.Status401Unauthorized, "empty password or email.");
+            if(registerData.Email.IsNullOrEmpty() || registerData.Password.IsNullOrEmpty()) return StatusCode(StatusCodes.Status401Unauthorized, "empty password or email.");
 
             var salt = StringExtensions.GetRandom(5);
             var saltedAndHashedPassword = (salt + registerData.Password).ApplySha256();

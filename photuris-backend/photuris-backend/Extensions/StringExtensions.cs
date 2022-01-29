@@ -16,13 +16,12 @@ namespace photuris_backend.Extensions
                 byteArray = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
             }
 
-            var stringBuilder = new StringBuilder();
-            foreach (var _byte in byteArray)
-            {
-                stringBuilder.Append(_byte.ToString("X2"));
-            }
+            return BitConverter.ToString(byteArray).Replace("-", "");
+        }
 
-            return stringBuilder.ToString();
+        public static bool IsNullOrEmpty(this string? input)
+        {
+            return string.IsNullOrEmpty(input);
         }
 
         public static string GetRandom(int length)

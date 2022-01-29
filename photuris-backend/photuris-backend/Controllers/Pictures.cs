@@ -37,7 +37,7 @@ namespace photuris_backend.Controllers
                     SizeInBytes = metaData.SizeInBytes
                 };
 
-                _repository.Add(picture);
+                _repository.Pictures.Add(picture);
                 await _repository.SaveChangesAsync();
 
                 return Ok();
