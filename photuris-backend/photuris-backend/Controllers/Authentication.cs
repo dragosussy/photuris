@@ -39,10 +39,10 @@ namespace photuris_backend
             }
 
             var user = _repository.Users.FirstOrDefault(u => u.Email == loginData.Email);
-            if (user == null) return StatusCode(StatusCodes.Status401Unauthorized,"user not found.");
+            if (user == null) return Unauthorized("user not found.");
 
-            var hashedAndSaltedInputPassword = (user.PasswordSalt + loginData.Password).ApplySha256();
-            if (hashedAndSaltedInputPassword != user.Password) return StatusCode(StatusCodes.Status401Unauthorized, "invalid password.");
+            var hashedAndSaltedInputPassword = PasswordHandler.EncryptPasswordSha256(user.PasswordSalt, loginData.Password);
+            if (hashedAndSaltedInputPassword != user.Password) return Unauthorized("invalid password.");
 
             var sessionToken = Guid.NewGuid().ToString();
             var sessionExpirationDate = DateTime.Now.AddHours(3);
@@ -55,10 +55,10 @@ namespace photuris_backend
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserDataDto registerData)
         {
-            if(string.IsNullOrEmpty(registerData.Email) || string.IsNullOrEmpty(registerData.Password)) return StatusCode(StatusCodes.Status401Unauthorized, "empty password or email.");
+            if(string.IsNullOrEmpty(registerData.Email) || string.IsNullOrEmpty(registerData.Password)) return Unauthorized("empty password or email.");
 
-            var salt = StringExtensions.GetRandom(5);
-            var saltedAndHashedPassword = (salt + registerData.Password).ApplySha256();
+            var salt = PasswordHandler.GenerateSalt(5);
+            var saltedAndHashedPassword = PasswordHandler.EncryptPasswordSha256(salt, registerData.Password);
 
             try
             {

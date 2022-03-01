@@ -3,8 +3,8 @@
     <FormulateInput
       type="password"
       v-model="password"
-      name="password"
-      label="password"
+      :name="inputName"
+      :label="inputLabel"
       :validation="[
         ['required'],
         ['matches', /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{7,}$/],
@@ -18,6 +18,7 @@
 <script>
 export default {
   name: "PasswordFormInput",
+  props: ["inputLabel", "inputName"],
   data() {
     return {
       password: "",

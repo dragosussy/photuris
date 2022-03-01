@@ -7,6 +7,7 @@ import App from './App.vue'
 import Home from './pages/Home.vue'
 import Login from './pages/Login.vue'
 import Register from './pages/Register.vue'
+import UserProfile from './pages/UserProfile.vue'
 
 import './style/formulate.min.css';
 import './style/globals.css'
@@ -24,6 +25,7 @@ const routes = [
   { path: '/home', component: Home },
   { path: '/login', component: Login },
   { path: '/register', component: Register },
+  { path: '/user-profile', component: UserProfile },
 ];
 const router = new VueRouter({
   routes: routes,

@@ -3,8 +3,8 @@
     <FormulateInput
       type="email"
       v-model="email"
-      name="email"
-      label="email"
+      :name="inputName"
+      :label="inputLabel"
       :validation="[['required'], ['email']]"
       :validation-messages="emailValidationMapper"
       error-behavior="blur"
@@ -15,6 +15,7 @@
 <script>
 export default {
   name: "EmailFormInput",
+  props: ["inputName", "inputLabel"],
   data() {
     return {
       email: "",
