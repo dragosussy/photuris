@@ -7,6 +7,9 @@ const getCookieValue = (name) => (
 const LoginUtils = {
     isLoggedInEndpoint: endpoints.checkIsLoggedIn,
 
+    getSessionCookieValue: function() {
+        return getCookieValue("auth_token");
+    },
     isLoggedIn: async function() {
         let sessionToken = getCookieValue("auth_token");
         if(sessionToken.length === 0) return false;

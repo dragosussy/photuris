@@ -1,7 +1,10 @@
 {
     "login": "https://localhost:7262/api/authentication/login/",
-    "checkIsLoggedIn": "https://localhost:7262/api/authentication/checkIsLoggedIn",
+    "checkIsLoggedIn": "https://localhost:7262/api/authentication/checkIsLoggedIn/",
     "register": "https://localhost:7262/api/authentication/register/",
+
+    "changeEmail": "https://localhost:7262/api/usermanager/change-email/",
+    "changePassword": "https://localhost:7262/api/usermanager/change-password/",
 
     "uploadPicture": "https://localhost:7262/api/pictures/upload/"
 }
