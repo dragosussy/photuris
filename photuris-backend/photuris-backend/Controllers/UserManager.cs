@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using photuris_backend.DbContext;
 using photuris_backend.DbContext.Entities;
+using photuris_backend.DTOs;
 using photuris_backend.Utilities;
 
 namespace photuris_backend.Controllers
@@ -18,9 +19,11 @@ namespace photuris_backend.Controllers
         }
 
         //TODO: instead of changing email directly, send a verification to the current mail and update only after that link is clicked
-        [HttpPut("change-email")]
-        public async Task<IActionResult> ChangeEmail(string sessionToken, string newEmail)
+        [HttpPut("change-email/{sessionToken}")]
+        public async Task<IActionResult> ChangeEmail([FromBody] ChangeEmailDto newEmailDto, string sessionToken)
         {
+            if (string.IsNullOrEmpty(newEmailDto?.NewEmail)) return Unauthorized("invalid email.");
+
             User currentUser;
             try
             {
@@ -31,7 +34,7 @@ namespace photuris_backend.Controllers
                 return NotFound(e.Message);
             }
 
-            currentUser.Email = newEmail;
+            currentUser.Email = newEmailDto.NewEmail;
 
             _repository.Users.Update(currentUser);
             await _repository.SaveChangesAsync();
@@ -39,10 +42,10 @@ namespace photuris_backend.Controllers
             return Ok("email changed.");
         }
 
-        [HttpPut("change-password")]
-        public async Task<IActionResult> ChangePassword(string sessionToken, string oldPassword, string newPassword, string newPasswordConfirmation)
+        [HttpPut("change-password/{sessionToken}")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto, string sessionToken)
         {
-            if (newPassword != newPasswordConfirmation) return Unauthorized("new passwords don't match.");
+            if (changePasswordDto.NewPassword != changePasswordDto.NewPasswordConfirmation) return Unauthorized("new passwords don't match.");
 
             User currentUser;
             try
@@ -54,11 +57,11 @@ namespace photuris_backend.Controllers
                 return NotFound(e.Message);
             }
 
-            if (PasswordHandler.EncryptPasswordSha256(currentUser.PasswordSalt, oldPassword) != currentUser.Password)
+            if (PasswordHandler.EncryptPasswordSha256(currentUser.PasswordSalt,changePasswordDto.OldPassword) != currentUser.Password)
                 return Unauthorized("old password is wrong.");
 
             currentUser.PasswordSalt = PasswordHandler.GenerateSalt(5);
-            currentUser.Password = PasswordHandler.EncryptPasswordSha256(currentUser.PasswordSalt, newPassword);
+            currentUser.Password = PasswordHandler.EncryptPasswordSha256(currentUser.PasswordSalt, changePasswordDto.NewPassword);
 
             _repository.Users.Update(currentUser);
             await _repository.SaveChangesAsync();

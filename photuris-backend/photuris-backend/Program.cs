@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using photuris_backend.DbContext;
 using photuris_backend.Utilities;
@@ -27,7 +28,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(options =>
-    options.WithOrigins("http://localhost:8080/", "http://192.168.0.193:8080/")
+    options.WithOrigins("http://localhost:8081/", "http://192.168.0.193:8081/")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()
