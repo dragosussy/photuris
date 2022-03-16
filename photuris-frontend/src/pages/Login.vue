@@ -1,7 +1,7 @@
 <template>
   <div id="login-page">
     <FormulateForm v-model="formValues" @submit="submit">
-      <EmailFormInput />
+      <EmailFormInput inputLabel="email" inputName="email" />
       <PasswordFormInput inputLabel="password" inputName="password" />
       <FormulateInput type="submit" label="log in" />
     </FormulateForm>

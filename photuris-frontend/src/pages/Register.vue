@@ -1,8 +1,8 @@
 <template>
   <div id="register-page">
     <FormulateForm v-model="formValues" @submit="submit">
-      <EmailFormInput />
-      <PasswordFormInput />
+      <EmailFormInput inputLabel="email" inputName="email" />
+      <PasswordFormInput inputLabel="password" inputName="password" />
       <ConfirmPasswordFormInput />
       <FormulateInput type="submit" label="register" />
     </FormulateForm>

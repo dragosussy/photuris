@@ -2,7 +2,7 @@
 {
     public class PicturesMetaDataDto
     {
-        public DateTime DateCreated { get; set; }
-        public ulong SizeInBytes { get; set; }
+        public string DateTimeCreatedString { get; set; }
+        public DateTime DateTimeCreated => Convert.ToDateTime(DateTimeCreatedString);
     }
 }

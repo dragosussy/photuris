@@ -18,13 +18,13 @@ namespace photuris_backend.Controllers
             _repository = repository;
         }
 
-        [HttpPost("Upload")]
-        public async Task<IActionResult> Upload([FromForm] string sessionToken, [FromForm] IFormFile file, [FromForm] PicturesMetaDataDto metaData)
+        [HttpPost("upload/{sessionToken}")]
+        public async Task<IActionResult> Upload(string sessionToken, [FromForm] IFormFile file, [FromForm] PicturesMetaDataDto metaData)
         {
             try
             {
                 var session = _repository.Sessions.FirstOrDefault(s => s.Token == sessionToken);
-                if (session == null) return StatusCode(StatusCodes.Status403Forbidden, "you are not logged in.");
+                if (session == null) return Forbid("you are not logged in.");
 
                 await using var memoryStream = new MemoryStream();
                 await file.CopyToAsync(memoryStream);
@@ -33,14 +33,14 @@ namespace photuris_backend.Controllers
                     Name = file.FileName,
                     UserId = session.UserId,
                     BinaryImageData = memoryStream.ToArray(),
-                    DateCreated = metaData.DateCreated,
-                    SizeInBytes = metaData.SizeInBytes
+                    DateCreated = metaData.DateTimeCreated,
+                    SizeInBytes = (ulong)file.Length
                 };
 
                 _repository.Pictures.Add(picture);
                 await _repository.SaveChangesAsync();
 
-                return Ok();
+                return Ok("picture uploaded.");
             }
             catch (Exception e)
             {
