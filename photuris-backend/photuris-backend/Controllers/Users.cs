@@ -4,18 +4,21 @@ using photuris_backend.DbContext;
 using photuris_backend.DbContext.Entities;
 using photuris_backend.DTOs;
 using photuris_backend.Utilities;
+using photuris_backend.Utilities.Shared;
 
 namespace photuris_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserManager : ControllerBase
+    public class Users : ControllerBase
     {
         private readonly Repository _repository;
+        private readonly UsersManager _usersManager;
 
-        public UserManager(Repository repository)
+        public Users(Repository repository, UsersManager usersManager)
         {
             _repository = repository;
+            _usersManager = usersManager;
         }
 
         //TODO: instead of changing email directly, send a verification to the current mail and update only after that link is clicked
@@ -27,7 +30,7 @@ namespace photuris_backend.Controllers
             User currentUser;
             try
             {
-                currentUser = await GetCurrentUserInternal(sessionToken);
+                currentUser = await _usersManager.GetUser(sessionToken);
             }
             catch (Exception e)
             {
@@ -50,7 +53,7 @@ namespace photuris_backend.Controllers
             User currentUser;
             try
             {
-                currentUser = await GetCurrentUserInternal(sessionToken);
+                currentUser = await _usersManager.GetUser(sessionToken);
             }
             catch (Exception e)
             {
@@ -75,7 +78,7 @@ namespace photuris_backend.Controllers
             User user;
             try
             {
-                user = await GetCurrentUserInternal(sessionToken);
+                user = await _usersManager.GetUser(sessionToken);
             }
             catch (Exception e)
             {
@@ -83,17 +86,6 @@ namespace photuris_backend.Controllers
             }
             
             return Ok(user);
-        }
-
-        private async Task<User> GetCurrentUserInternal(string sessionToken)
-        {
-            var currentUserSession = await _repository.Sessions.FirstOrDefaultAsync(s => s.Token == sessionToken);
-            if (currentUserSession == null) throw new Exception("user session not found.");
-
-            var currentUser = await _repository.Users.FirstOrDefaultAsync(u => u.Id == currentUserSession.UserId);
-            if (currentUser == null) throw new Exception("session expired.");
-
-            return currentUser;
         }
     }
 }

@@ -4,6 +4,7 @@ using photuris_backend.DbContext;
 using photuris_backend.DbContext.Entities;
 using photuris_backend.DTOs;
 using photuris_backend.Extensions;
+using photuris_backend.Utilities.Shared;
 
 namespace photuris_backend.Controllers
 {
@@ -12,10 +13,12 @@ namespace photuris_backend.Controllers
     public class Pictures : ControllerBase
     {
         private readonly Repository _repository;
+        private readonly UsersManager _usersManager;
 
-        public Pictures(Repository repository)
+        public Pictures(Repository repository, UsersManager usersManager)
         {
             _repository = repository;
+            _usersManager = usersManager;
         }
 
         [HttpPost("upload/{sessionToken}")]
@@ -45,6 +48,26 @@ namespace photuris_backend.Controllers
             catch (Exception e)
             {
                 return this.InternalServerError("bad things happened: " + e.Message);
+            }
+        }
+
+        [HttpGet("pictures/{sessionToken}/{pageNumber:int}")]
+        public async Task<IActionResult> GetPicturesForUser(string sessionToken, int pageNumber)
+        {
+            if (pageNumber < 1) return Forbid("invalid page number.");
+
+            try
+            {
+                var user = await _usersManager.GetUser(sessionToken);
+                var pictures = _repository.Pictures
+                    .AsEnumerable()
+                    .Where(p => p.UserId == user.Id)
+                    .Chunk(2);
+                return Ok(pictures.ElementAt(pageNumber - 1).ToList());
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
     }

@@ -3,8 +3,9 @@
     "checkIsLoggedIn": "https://localhost:7262/api/authentication/checkIsLoggedIn/",
     "register": "https://localhost:7262/api/authentication/register/",
 
-    "changeEmail": "https://localhost:7262/api/usermanager/change-email/",
-    "changePassword": "https://localhost:7262/api/usermanager/change-password/",
+    "changeEmail": "https://localhost:7262/api/users/change-email/",
+    "changePassword": "https://localhost:7262/api/users/change-password/",
 
-    "uploadPicture": "https://localhost:7262/api/pictures/upload/"
+    "uploadPicture": "https://localhost:7262/api/pictures/upload/",
+    "getPictures": "https://localhost:7262/api/pictures/pictures/"    
 }

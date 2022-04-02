@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using photuris_backend.DbContext;
 using photuris_backend.Utilities;
+using photuris_backend.Utilities.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +17,7 @@ builder.Services.AddSwaggerGen();
 // Dependency Injection.
 builder.Services.AddDbContext<Repository>(options =>
    options.UseSqlServer(builder.Configuration.GetSection("LocalDbConnectionString").Value));
-
+builder.Services.AddScoped<UsersManager>();
 builder.Services.AddHostedService<ExpiredSessionsCleanerJob>();
 
 var app = builder.Build();
