@@ -60,9 +60,9 @@ namespace photuris_backend.Controllers
             {
                 var user = await _usersManager.GetUser(sessionToken);
                 var pictures = _repository.Pictures
-                    .AsEnumerable()
                     .Where(p => p.UserId == user.Id)
-                    .Chunk(2);
+                    .AsEnumerable()
+                    .Chunk(4);
                 return Ok(pictures.ElementAt(pageNumber - 1).ToList());
             }
             catch (Exception e)
