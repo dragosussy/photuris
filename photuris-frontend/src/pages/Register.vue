@@ -1,5 +1,8 @@
 <template>
-  <div id="register-page">
+  <div
+    id="register-page"
+    class="full-height d-flex align-items-center justify-content-center"
+  >
     <FormulateForm v-model="formValues" @submit="submit">
       <EmailFormInput inputLabel="email" inputName="email" />
       <PasswordFormInput inputLabel="password" inputName="password" />

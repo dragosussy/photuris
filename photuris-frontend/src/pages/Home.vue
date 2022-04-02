@@ -1,9 +1,8 @@
 <template>
-  <div>
-    Home
+  <div class="full-height">
     <UploadFileInput />
     <VirtualList
-      style="height: 500px; overflow-y: auto"
+      style="height: 95%; overflow-y: auto"
       :data-key="'id'"
       :data-sources="pictures"
       :data-component="pictureComponent"

@@ -1,17 +1,24 @@
 <template>
-  <div id="login-page">
+  <div
+    id="login-page"
+    class="full-height d-flex align-items-center justify-content-center"
+  >
     <FormulateForm v-model="formValues" @submit="submit">
       <EmailFormInput inputLabel="email" inputName="email" />
       <PasswordFormInput inputLabel="password" inputName="password" />
       <FormulateInput type="submit" label="log in" />
-    </FormulateForm>
 
-    <div>
-      <p>
-        don't have an account?
-        <span @click="redirectToRegister" class="green-span">create one</span>
-      </p>
-    </div>
+      <span class="error-text">{{ errorMessage }}</span>
+
+      <div class="create-account-text">
+        <p>
+          don't have an account?
+          <span @click="redirectToRegister" class="green-span"
+            >create one.</span
+          >
+        </p>
+      </div>
+    </FormulateForm>
   </div>
 </template>
 
@@ -27,6 +34,7 @@ export default {
     return {
       loginEndpoint: window.endpoints.login,
       formValues: {},
+      errorMessage: "",
     };
   },
 
@@ -47,7 +55,10 @@ export default {
           password: this.formValues.password,
         }),
       }).then((response) => {
-        if (response.status !== 200) return;
+        if (response.status !== 200) {
+          response.text().then((text) => (this.errorMessage = text));
+          return;
+        }
         this.addAuthCookie(response);
         this.$router.go(); // refresh page
       });
@@ -71,3 +82,6 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+</style>

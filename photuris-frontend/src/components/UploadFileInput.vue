@@ -1,7 +1,19 @@
 <template>
-  <div>
-    <input type="file" accept="image/png, image/jpeg" @change="changePicture" />
-    <FormulateInput type="button" label="upload" @click="uploadPicture" />
+  <div id="file-upload">
+    <div class="full-height d-flex align-items-center justify-content-center">
+      <div>
+        <input
+          type="file"
+          accept="image/png, image/jpeg"
+          @change="changePicture"
+        />
+        <div
+          class="full-height d-flex align-items-center justify-content-center"
+        >
+          <FormulateInput type="button" label="upload" @click="uploadPicture" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -60,3 +72,11 @@ export default {
   },
 };
 </script>
+
+<style>
+#file-upload {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+</style>
