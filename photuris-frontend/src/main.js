@@ -13,6 +13,7 @@ import Home from './pages/Home.vue'
 import Login from './pages/Login.vue'
 import Register from './pages/Register.vue'
 import UserProfile from './pages/UserProfile.vue'
+import TestEncryptPage from './pages/TestEncryptPage'
 
 import './style/formulate.min.css';
 import './style/globals.css'
@@ -35,6 +36,7 @@ const routes = [
   { path: '/login', component: Login },
   { path: '/register', component: Register },
   { path: '/user-profile', component: UserProfile },
+  { path: '/test-encrypt', component: TestEncryptPage }
 ];
 const router = new VueRouter({
   routes: routes,
