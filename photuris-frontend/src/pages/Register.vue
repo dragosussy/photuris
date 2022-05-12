@@ -16,7 +16,10 @@
 import PasswordFormInput from "../components/PasswordFormInput.vue";
 import EmailFormInput from "../components/EmailFormInput.vue";
 import ConfirmPasswordFormInput from "../components/ConfirmPasswordFormInput.vue";
+
 import LoginUtils from "../utilities/LoginUtils.js";
+import KeysStorageHelper from "../utilities/KeysStorageHelper";
+import Crypto from "../utilities/Crypto";
 
 export default {
   name: "Register",
@@ -33,7 +36,16 @@ export default {
   },
 
   methods: {
+    handleKeysPipeline() {
+      const masterKey = Crypto.generateMasterKey();
+
+      KeysStorageHelper.storeMasterKey(masterKey);
+      KeysStorageHelper.storePasswordDerivedKey(this.formValues.password);
+    },
+
     submit() {
+      this.handleKeysPipeline();
+
       fetch(this.registerEndpoint, {
         method: "POST",
         mode: "cors",
@@ -43,9 +55,15 @@ export default {
         body: JSON.stringify({
           email: this.formValues.email,
           password: this.formValues.password,
+          encryptedMasterKey: Crypto.encryptMasterKey(
+            KeysStorageHelper.getMasterKey(),
+            KeysStorageHelper.getPasswordDerivedKey()
+          ),
         }),
       }).then((response) => {
-        if (response.status === 200) this.$router.push("/login");
+        if (response.status === 200) {
+          this.$router.push("/login");
+        }
       });
     },
   },

@@ -4,6 +4,7 @@
     {
         public string? Email { get; set; }
         public string? Password { get; set; }
+        public string? EncryptedMasterKey { get; set; }
         public string? SessionToken { get; set; }
     }
 }

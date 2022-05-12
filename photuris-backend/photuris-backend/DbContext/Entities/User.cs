@@ -24,5 +24,8 @@ namespace photuris_backend.DbContext.Entities
 
         [Required]
         public string HashAlgorithm { get; set; }
+        
+        [Required]
+        public string EncryptedMasterKey { get; set; }
     }
 }

@@ -20,6 +20,12 @@ namespace photuris_backend
             _repository = repository;
         }
 
+        [HttpGet("GetMasterKey")]
+        public async Task<string> GetEncryptedMasterKey(string email)
+        {
+            return (await _repository.Users.FirstOrDefaultAsync(u => u.Email == email))?.EncryptedMasterKey ?? string.Empty;
+        }
+
         [HttpGet("CheckIsLoggedIn")]
         public async Task<bool> IsLoggedIn(string token)
         {
@@ -37,16 +43,19 @@ namespace photuris_backend
 
             try
             {
+                var user = _repository.Users.FirstOrDefault(u => u.Email == loginData.Email);
+                if (user == null) return Unauthorized("user not found.");
+
                 if (!string.IsNullOrEmpty(loginData.SessionToken))
                 {
                     var session = _repository.Sessions.FirstOrDefault(s => s.Token == loginData.SessionToken);
                     if (session != null)
                         return Ok(new AuthenticationCookie
-                            {Token = loginData.SessionToken, ExpirationDate = session.ExpirationDate});
+                        {
+                            Token = loginData.SessionToken, 
+                            ExpirationDate = session.ExpirationDate,
+                        });
                 }
-
-                var user = _repository.Users.FirstOrDefault(u => u.Email == loginData.Email);
-                if (user == null) return Unauthorized("user not found.");
 
                 var hashedAndSaltedInputPassword = PasswordHandler.EncryptPasswordSha256(user.PasswordSalt, loginData.Password);
                 if (hashedAndSaltedInputPassword != user.Password) return Unauthorized("invalid password.");
@@ -57,7 +66,11 @@ namespace photuris_backend
                     {Token = sessionToken, UserId = user.Id, ExpirationDate = sessionExpirationDate});
                 await _repository.SaveChangesAsync();
 
-                return Ok(new AuthenticationCookie {Token = sessionToken, ExpirationDate = sessionExpirationDate});
+                return Ok(new AuthenticationCookie
+                {
+                    Token = sessionToken, 
+                    ExpirationDate = sessionExpirationDate,
+                });
             }
             catch (Exception e)
             {
@@ -68,10 +81,14 @@ namespace photuris_backend
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserDataDto registerData)
         {
-            if(string.IsNullOrEmpty(registerData.Email) || string.IsNullOrEmpty(registerData.Password)) return Unauthorized("empty password or email.");
+            if (string.IsNullOrEmpty(registerData.Email) || string.IsNullOrEmpty(registerData.Password) ||
+                string.IsNullOrEmpty(registerData.EncryptedMasterKey)) return Unauthorized("empty password or email.");
 
             var salt = PasswordHandler.GenerateSalt(5);
             var saltedAndHashedPassword = PasswordHandler.EncryptPasswordSha256(salt, registerData.Password);
+
+            var existingUser = await _repository.Users.FirstOrDefaultAsync(u => u.Email == registerData.Email);
+            if (existingUser != null) return Unauthorized("user with that email already exists.");
 
             try
             {
@@ -80,7 +97,8 @@ namespace photuris_backend
                     Email = registerData.Email,
                     Password = saltedAndHashedPassword,
                     PasswordSalt = salt,
-                    HashAlgorithm = HashAlgorithmName.SHA256.ToString()
+                    HashAlgorithm = HashAlgorithmName.SHA256.ToString(),
+                    EncryptedMasterKey = registerData.EncryptedMasterKey
                 });
                 await _repository.SaveChangesAsync();
 

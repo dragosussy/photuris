@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import KeysStorageHelper from "../utilities/KeysStorageHelper";
 import LoginUtils from "../utilities/LoginUtils";
 export default {
   name: "UploadFile",
@@ -52,22 +53,25 @@ export default {
       // TODO: error handling when no image is uploaded
       if (this.inputImage == null) return;
 
-      const formData = new FormData();
-      formData.append("file", this.inputImage);
-      // formData.append("metaData", {
-      //   datetimecreatedstring: new Date(
-      //     this.inputImage.lastModified
-      //   ).toLocaleString(),
-      // });
-      formData.append(
-        "datetimecreatedstring",
-        new Date(this.inputImage.lastModified).toLocaleString()
-      );
-      fetch(this.uploadPictureEndpoint + LoginUtils.getSessionCookieValue(), {
-        method: "POST",
-        mode: "cors",
-        body: formData,
-      }).then((response) => console.log(response));
+      const self = this;
+      Crypto.encryptFile(this.inputImage, KeysStorageHelper.getMasterKey())
+        .then((encryptedFile) => {
+          const formData = new FormData();
+          formData.append("file", encryptedFile);
+          formData.append(
+            "datetimecreatedstring",
+            new Date(self.inputImage.lastModified).toLocaleString()
+          );
+          fetch(
+            self.uploadPictureEndpoint + LoginUtils.getSessionCookieValue(),
+            {
+              method: "POST",
+              mode: "cors",
+              body: formData,
+            }
+          ).then((response) => console.log(response));
+        })
+        .catch((error) => console.log(error));
     },
   },
 };

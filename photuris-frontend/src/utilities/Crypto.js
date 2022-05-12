@@ -16,6 +16,26 @@ function convertWordArrayToUint8Array(wordArray) {
 }
 
 const Crypto = {
+    generateMasterKey: function() {
+        return CryptoJs.lib.WordArray.random(32).toString();
+    },
+
+    deriveKeyFromPassword: function(password) {
+        return CryptoJs.PBKDF2(password, "", {
+            keySize: 256 / 32, 
+            iterations: 500
+        });
+    },
+    
+    encryptMasterKey: function(masterKey, passwordDerivedKey) {
+        return CryptoJs.AES.encrypt(masterKey, passwordDerivedKey).toString();
+    },
+
+    decryptMasterKey: function(encryptedMasterKey, passwordDerivedKey) {
+        //const encryptedMkWordArray = CryptoJs.enc.Hex.parse(encryptedMasterKey);
+        return CryptoJs.AES.decrypt(encryptedMasterKey, passwordDerivedKey).toString(CryptoJs.enc.Utf8);
+    },
+
     encryptFile: function(file, key) {
         return new Promise(function(resolve, reject){
             var reader = new FileReader();

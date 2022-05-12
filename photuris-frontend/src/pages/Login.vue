@@ -26,6 +26,8 @@
 import PasswordFormInput from "../components/PasswordFormInput.vue";
 import EmailFormInput from "../components/EmailFormInput.vue";
 import LoginUtils from "../utilities/LoginUtils.js";
+import KeysStorageHelper from "../utilities/KeysStorageHelper";
+import Crypto from "../utilities/Crypto";
 
 export default {
   name: "Login",
@@ -33,6 +35,7 @@ export default {
   data() {
     return {
       loginEndpoint: window.endpoints.login,
+      getMasterKeyEndpoint: window.endpoints.getEncryptedMasterKey,
       formValues: {},
       errorMessage: "",
     };
@@ -59,21 +62,46 @@ export default {
           response.text().then((text) => (this.errorMessage = text));
           return;
         }
-        this.addAuthCookie(response);
+
+        this.processLoginResponse(response);
         this.$router.go(); // refresh page
       });
     },
 
-    addAuthCookie(serverResponse) {
-      serverResponse.text().then((responseString) => {
-        let responseObject = JSON.parse(responseString);
+    processLoginResponse(response) {
+      response.json().then((responseObject) => {
+        console.log("auth cookie obj", responseObject);
 
-        this.$cookies.set(
-          "auth_token",
-          responseObject.token,
-          Date.parse(responseObject.expirationDate)
-        );
+        KeysStorageHelper.storePasswordDerivedKey(this.formValues.password);
+        this.setMasterKey();
+        this.addAuthCookie(responseObject);
       });
+    },
+
+    setMasterKey() {
+      fetch(`${this.getMasterKeyEndpoint}?email=${this.formValues.email}`, {
+        method: "GET",
+        mode: "cors",
+      })
+        .then((response) => response.text())
+        .then((encryptedMasterKey) => {
+          const decryptedMasterKey = Crypto.decryptMasterKey(
+            encryptedMasterKey,
+            KeysStorageHelper.getPasswordDerivedKey()
+          );
+
+          console.log("decr master key login", decryptedMasterKey);
+
+          KeysStorageHelper.storeMasterKey(decryptedMasterKey);
+        });
+    },
+
+    addAuthCookie(responseObject) {
+      this.$cookies.set(
+        "auth_token",
+        responseObject.token,
+        Date.parse(responseObject.expirationDate)
+      );
     },
 
     redirectToRegister() {
