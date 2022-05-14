@@ -20,6 +20,8 @@
 <script>
 import KeysStorageHelper from "../utilities/KeysStorageHelper";
 import LoginUtils from "../utilities/LoginUtils";
+import CryptoJs from "../utilities/Crypto";
+
 export default {
   name: "UploadFile",
   data() {
@@ -29,24 +31,9 @@ export default {
     };
   },
 
-  created() {
-    // window.crypto.subtle
-    //   .generateKey(
-    //     {
-    //       name: "AES-GCM",
-    //       length: 256,
-    //     },
-    //     true,
-    //     ["encrypt", "decrypt"]
-    //   )
-    //   .then((key) => console.log(key))
-    //   .catch((error) => console.error(error));
-  },
-
   methods: {
     changePicture(event) {
       this.inputImage = event.target.files[0];
-      console.log(this.inputImage);
     },
 
     uploadPicture() {
@@ -54,13 +41,16 @@ export default {
       if (this.inputImage == null) return;
 
       const self = this;
-      Crypto.encryptFile(this.inputImage, KeysStorageHelper.getMasterKey())
+      CryptoJs.encryptFile(this.inputImage, KeysStorageHelper.getMasterKey())
         .then((encryptedFile) => {
           const formData = new FormData();
+
           formData.append("file", encryptedFile);
           formData.append(
             "datetimecreatedstring",
-            new Date(self.inputImage.lastModified).toLocaleString()
+            new Date(self.inputImage.lastModified).toLocaleString("en-GB", {
+              timeZone: "UTC",
+            })
           );
           fetch(
             self.uploadPictureEndpoint + LoginUtils.getSessionCookieValue(),

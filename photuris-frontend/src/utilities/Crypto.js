@@ -43,7 +43,7 @@ const Crypto = {
             reader.onload = () => {
                 var wordArray = CryptoJs.lib.WordArray.create(reader.result);
                 var encrypted = CryptoJs.AES.encrypt(wordArray, key).toString();
-
+          
                 resolve(new Blob([encrypted]));
             };
             reader.onerror = () => reject("error encrypting data.");
@@ -66,7 +66,7 @@ const Crypto = {
 
             reader.readAsText(blob)
         });
-    }
+     }
 }
 
 export default Crypto;

@@ -1,11 +1,15 @@
 <template>
   <div class="col-xs-12 col-md-3">
     <!-- <div> -->
-    <img :src="getFormattedImage" class="img-responsive" />
+    <!-- <img :src="getFormattedImage" class="img-responsive" /> -->
+    <img :src="displayPictureFormatted" class="img-responsive" />
   </div>
 </template>
 
 <script>
+import KeysStorageHelper from "../utilities/KeysStorageHelper";
+import CryptoJs from "../utilities/Crypto";
+
 export default {
   name: "Picture",
   props: {
@@ -18,11 +22,39 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      displayPictureFormatted: "",
+      pictureBlob: null,
+    };
   },
-  computed: {
-    getFormattedImage() {
-      return `data:image/jpeg;base64, ${this.source.binaryImageData}`;
+  created() {
+    const self = this;
+
+    CryptoJs.decryptFile(
+      new Blob([this.source.binaryImageData]),
+      KeysStorageHelper.getMasterKey()
+    )
+      .then((decryptedFile) => {
+        self.pictureBlob = decryptedFile;
+        self
+          .formatImage()
+          .then((result) => (self.displayPictureFormatted = result));
+      })
+      .catch((error) => console.log(error));
+  },
+  methods: {
+    formatImage() {
+      const self = this;
+      return new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+          resolve(e.target.result);
+        };
+        reader.onerror = () => reject("error formatting img.");
+
+        reader.readAsDataURL(self.pictureBlob);
+      });
     },
   },
 };

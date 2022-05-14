@@ -40,10 +40,11 @@ export default {
 
   methods: {
     async getPage() {
-      const pictures = fetch(
+      const pictures = await fetch(
         this.getPicturesEndpoint +
           `${LoginUtils.getSessionCookieValue()}/${this.pageNumber}`
       ).then((response) => response.json());
+
       this.pageNumber += 1;
       return pictures;
     },

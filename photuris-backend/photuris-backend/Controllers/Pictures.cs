@@ -62,7 +62,8 @@ namespace photuris_backend.Controllers
                 var pictures = _repository.Pictures
                     .Where(p => p.UserId == user.Id)
                     .AsEnumerable()
-                    .Chunk(4);
+                    .Chunk(4) ;
+                if (!pictures?.Any() ?? true) return Ok(Enumerable.Empty<Picture>());
                 return Ok(pictures.ElementAt(pageNumber - 1).ToList());
             }
             catch (Exception e)
