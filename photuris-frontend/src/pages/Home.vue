@@ -3,6 +3,8 @@
     <UploadFileInput />
     <VirtualList
       style="height: 95%; overflow-y: auto"
+      item-class="col-xs-6 col-md-3 col-lg-2"
+      :item-style="{ padding: '10px' }"
       :data-key="'id'"
       :data-sources="pictures"
       :data-component="pictureComponent"
@@ -35,6 +37,8 @@ export default {
   async created() {
     if (!(await LoginUtils.isLoggedIn())) this.$router.push("/login");
 
+    document.querySelector('[role="group"]').classList.add("row");
+
     this.pictures = await this.getPage();
   },
 
@@ -55,3 +59,6 @@ export default {
   },
 };
 </script>
+
+<style>
+</style>

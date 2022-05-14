@@ -22,7 +22,7 @@ namespace photuris_backend.Controllers
         }
 
         [HttpPost("upload/{sessionToken}")]
-        public async Task<IActionResult> Upload(string sessionToken, [FromForm] string fileName, [FromForm] string fileBase64, [FromForm] PicturesMetaDataDto metaData)
+        public async Task<IActionResult> Upload(string sessionToken, [FromForm] string fileBase64, [FromForm] PicturesMetaDataDto metaData)
         {
             try
             {
@@ -31,11 +31,11 @@ namespace photuris_backend.Controllers
 
                 var picture = new Picture()
                 {
-                    Name = fileName,
+                    Name = metaData.FileName,
                     UserId = session.UserId,
-                    BinaryImageData = fileBase64,
+                    ImageDataBase64 = fileBase64,
                     DateCreated = metaData.DateTimeCreated,
-                    SizeInBytes = 15
+                    SizeInBytes = metaData.FileSize
                 };
 
                 _repository.Pictures.Add(picture);
@@ -60,9 +60,15 @@ namespace photuris_backend.Controllers
                 var pictures = _repository.Pictures
                     .Where(p => p.UserId == user.Id)
                     .AsEnumerable()
-                    .Chunk(4) ;
-                if (!pictures?.Any() ?? true) return Ok(Enumerable.Empty<Picture>());
-                return Ok(pictures.ElementAt(pageNumber - 1).ToList());
+                    .Chunk(10)
+                    .Select(array => array.AsEnumerable());
+
+                var picturesList = pictures.ToList();
+
+                if (pageNumber > picturesList.Count) return Ok(Enumerable.Empty<Picture[]>());
+                if (!picturesList.Any()) return Ok(Enumerable.Empty<Picture[]>());
+
+                return Ok(picturesList.ElementAt(pageNumber - 1).ToList());
             }
             catch (Exception e)
             {

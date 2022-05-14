@@ -45,7 +45,6 @@ export default {
         .then((encryptedFile) => {
           const formData = new FormData();
 
-          formData.append("fileName", self.inputImage.name);
           formData.append("fileBase64", encryptedFile);
           formData.append(
             "datetimecreatedstring",
@@ -53,6 +52,8 @@ export default {
               timeZone: "UTC",
             })
           );
+          formData.append("fileName", self.inputImage.name);
+          formData.append("fileSize", self.inputImage.size);
           fetch(
             self.uploadPictureEndpoint + LoginUtils.getSessionCookieValue(),
             {

@@ -1,7 +1,5 @@
 <template>
-  <div class="col-xs-12 col-md-3">
-    <!-- <div> -->
-    <!-- <img :src="getFormattedImage" class="img-responsive" /> -->
+  <div class="">
     <img :src="displayPictureFormatted" class="img-responsive" />
   </div>
 </template>
@@ -31,7 +29,7 @@ export default {
     const self = this;
 
     CryptoJs.decryptFile(
-      new Blob([this.source.binaryImageData]),
+      new Blob([this.source.imageDataBase64]),
       KeysStorageHelper.getMasterKey()
     )
       .then((decryptedFile) => {

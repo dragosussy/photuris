@@ -6,5 +6,9 @@
 
         public DateTime DateTimeCreated =>
             Convert.ToDateTime(DateTimeCreatedString);
+
+        public string FileName { get; set; }
+
+        public ulong FileSize { get; set; }
     }
 }
