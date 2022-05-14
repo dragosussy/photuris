@@ -22,22 +22,20 @@ namespace photuris_backend.Controllers
         }
 
         [HttpPost("upload/{sessionToken}")]
-        public async Task<IActionResult> Upload(string sessionToken, [FromForm] IFormFile file, [FromForm] PicturesMetaDataDto metaData)
+        public async Task<IActionResult> Upload(string sessionToken, [FromForm] string fileName, [FromForm] string fileBase64, [FromForm] PicturesMetaDataDto metaData)
         {
             try
             {
                 var session = _repository.Sessions.FirstOrDefault(s => s.Token == sessionToken);
                 if (session == null) return Forbid("you are not logged in.");
 
-                await using var memoryStream = new MemoryStream();
-                await file.CopyToAsync(memoryStream);
                 var picture = new Picture()
                 {
-                    Name = file.FileName,
+                    Name = fileName,
                     UserId = session.UserId,
-                    BinaryImageData = memoryStream.ToArray(),
+                    BinaryImageData = fileBase64,
                     DateCreated = metaData.DateTimeCreated,
-                    SizeInBytes = (ulong)file.Length
+                    SizeInBytes = 15
                 };
 
                 _repository.Pictures.Add(picture);

@@ -45,7 +45,8 @@ export default {
         .then((encryptedFile) => {
           const formData = new FormData();
 
-          formData.append("file", encryptedFile);
+          formData.append("fileName", self.inputImage.name);
+          formData.append("fileBase64", encryptedFile);
           formData.append(
             "datetimecreatedstring",
             new Date(self.inputImage.lastModified).toLocaleString("en-GB", {

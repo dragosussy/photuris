@@ -12,7 +12,7 @@ namespace photuris_backend.DbContext.Entities
         [Required]
         public string Name { get; set; }
         [Required]
-        public byte[] BinaryImageData { get; set; }
+        public string BinaryImageData { get; set; }
     }
 
     public class PicturesMetaData

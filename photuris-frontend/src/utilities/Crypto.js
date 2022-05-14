@@ -16,6 +16,8 @@ function convertWordArrayToUint8Array(wordArray) {
 }
 
 const Crypto = {
+    iv: "init_vector",
+
     generateMasterKey: function() {
         return CryptoJs.lib.WordArray.random(32).toString();
     },
@@ -37,14 +39,16 @@ const Crypto = {
     },
 
     encryptFile: function(file, key) {
+        const self = this;
         return new Promise(function(resolve, reject){
             var reader = new FileReader();
 
             reader.onload = () => {
                 var wordArray = CryptoJs.lib.WordArray.create(reader.result);
-                var encrypted = CryptoJs.AES.encrypt(wordArray, key).toString();
+                var encrypted = CryptoJs.AES.encrypt(wordArray, key, {iv: self.iv}).toString();
           
-                resolve(new Blob([encrypted]));
+                //resolve(new Blob([encrypted]));
+                resolve(encrypted);
             };
             reader.onerror = () => reject("error encrypting data.");
 
@@ -53,11 +57,12 @@ const Crypto = {
     },
 
     decryptFile: function(blob, key) {
+        const self = this;
         return new Promise(function(resolve, reject) {
             var reader = new FileReader();
 
             reader.onload = () => {
-                var decrypted = CryptoJs.AES.decrypt(reader.result, key);
+                var decrypted = CryptoJs.AES.decrypt(reader.result, key, {iv: self.iv});
                 var typedArray = convertWordArrayToUint8Array(decrypted);
 
                 resolve(new Blob([typedArray]));
