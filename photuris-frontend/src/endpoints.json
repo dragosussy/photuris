@@ -2,6 +2,8 @@
     "login": "https://localhost:7262/api/authentication/login/",
     "checkIsLoggedIn": "https://localhost:7262/api/authentication/checkIsLoggedIn/",
     "register": "https://localhost:7262/api/authentication/register/",
+    "logout": "https://localhost:7262/api/authentication/logout/",
+
     "getEncryptedMasterKey": "https://localhost:7262/api/authentication/getMasterKey/",
 
     "changeEmail": "https://localhost:7262/api/users/change-email/",

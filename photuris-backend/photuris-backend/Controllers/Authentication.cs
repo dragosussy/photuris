@@ -35,6 +35,25 @@ namespace photuris_backend
             return await _repository.Sessions.FirstOrDefaultAsync(s => s.Token == token) != null;
         }
 
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout([FromBody] SessionTokenDto sessionDto)
+        {
+            try
+            {
+                var session = await _repository.Sessions.FirstOrDefaultAsync(s => s.Token == sessionDto.SessionToken);
+
+                if (session == null) return BadRequest("invalid session.");
+
+                _repository.Sessions.Remove(session);
+                await _repository.SaveChangesAsync();
+            } catch (Exception e)
+            {
+                return this.InternalServerError("bad things happened: " + e.Message);
+            }
+
+            return Ok("session cookie deleted.");
+        }
+
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody]UserDataDto loginData)
         {

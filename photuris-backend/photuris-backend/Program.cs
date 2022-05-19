@@ -1,8 +1,5 @@
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using photuris_backend.DbContext;
-using photuris_backend.Utilities;
 using photuris_backend.Utilities.Shared;
 
 var builder = WebApplication.CreateBuilder(args);

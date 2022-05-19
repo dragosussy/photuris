@@ -3,7 +3,7 @@
     <Menu style="display: flex" mode="horizontal" theme="dark" active-name="1">
       <MenuItem name="1">
         <Icon type="ios-camera-outline" size="32" />
-        <router-link to="/home">Photuris</router-link>
+        <router-link to="/home"><b>Photuris</b></router-link>
       </MenuItem>
       <MenuItem name="2">
         <router-link to="/home">home</router-link>
