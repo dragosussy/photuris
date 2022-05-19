@@ -70,8 +70,6 @@ export default {
 
     processLoginResponse(response) {
       response.json().then((responseObject) => {
-        console.log("auth cookie obj", responseObject);
-
         KeysStorageHelper.storePasswordDerivedKey(this.formValues.password);
         this.setMasterKey();
         this.addAuthCookie(responseObject);
@@ -89,8 +87,6 @@ export default {
             encryptedMasterKey,
             KeysStorageHelper.getPasswordDerivedKey()
           );
-
-          console.log("decr master key login", decryptedMasterKey);
 
           KeysStorageHelper.storeMasterKey(decryptedMasterKey);
         });

@@ -1,58 +1,31 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#"
-          ><router-link to="/home"
-            ><font-awesome-icon icon="fa-solid fa-camera"></font-awesome-icon
-            >Photuris</router-link
-          ></a
-        >
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#"
-                ><router-link to="/home">Home</router-link></a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#"
-                ><router-link to="/user-profile">User Profile</router-link></a
-              >
-            </li>
-            <!-- <li class="nav-item">
-              <a
-                class="nav-link disabled"
-                href="#"
-                tabindex="-1"
-                aria-disabled="true"
-                >Disabled</a
-              >
-            </li> -->
-          </ul>
-        </div>
-      </div>
-    </nav>
+    <Menu style="display: flex" mode="horizontal" theme="dark" active-name="1">
+      <MenuItem name="1">
+        <Icon type="ios-camera-outline" size="32" />
+        <router-link to="/home">Photuris</router-link>
+      </MenuItem>
+      <MenuItem name="2">
+        <router-link to="/home">home</router-link>
+      </MenuItem>
+      <MenuItem name="4">
+        <router-link to="/user-profile">user profile</router-link>
+      </MenuItem>
+      <MenuItem style="margin-left: auto" name="4">
+        <LogoutButton></LogoutButton>
+      </MenuItem>
+    </Menu>
 
     <router-view></router-view>
   </div>
 </template>
 
 <script>
+import LogoutButton from "./components/LogoutButton.vue";
+
 export default {
   name: "App",
-  components: {},
+  components: { LogoutButton },
 };
 </script>
 
@@ -66,5 +39,17 @@ body {
 
 #app {
   height: 90%;
+}
+
+.nav-link {
+  padding: 0;
+}
+
+.right-menu-item {
+  right: -71%;
+}
+
+a {
+  color: #41b883 !important;
 }
 </style>

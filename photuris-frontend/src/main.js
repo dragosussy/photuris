@@ -4,9 +4,6 @@ import VueFormulate from '@braid/vue-formulate'
 import VueCookies from 'vue-cookies'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min.js'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCamera } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import App from './App.vue'
 import Home from './pages/Home.vue'
@@ -16,16 +13,16 @@ import UserProfile from './pages/UserProfile.vue'
 
 import './style/formulate.min.css';
 import './style/globals.css'
-import endpoints from './endpoints.json'
+import iView from 'iview';
+import 'iview/dist/styles/iview.css';
 
-// Font Awesome
-library.add(faCamera);
-Vue.component('font-awesome-icon', FontAwesomeIcon);
+import endpoints from './endpoints.json'
 
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
 Vue.use(VueFormulate);
 Vue.use(VueCookies);
+Vue.use(iView);
 
 window.endpoints = endpoints;
 
