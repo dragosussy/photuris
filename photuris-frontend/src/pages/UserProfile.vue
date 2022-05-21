@@ -1,11 +1,37 @@
 <template>
   <div id="user-profile-page">
-    User Profile
-    <p @click="changeSelectedTab('change-email')">change email</p>
-    <ChangeEmail v-show="selectedTab == 'change-email'" />
-
-    <p @click="changeSelectedTab('change-password')">change password</p>
-    <ChangePassword v-show="selectedTab == 'change-password'" />
+    <Layout>
+      <Sider breakpoint="md">
+        <Menu
+          @on-select="changeSelectedTab"
+          active-name="account-details"
+          theme="light"
+          width="auto"
+        >
+          <MenuItem name="account-details">
+            <Icon type="ios-navigate"></Icon>
+            <span>account details</span>
+          </MenuItem>
+          <Submenu name="settings">
+            <template slot="title">
+              <Icon type="ios-navigate"></Icon>
+              change settings
+            </template>
+            <MenuItem name="change-email">change email</MenuItem>
+            <MenuItem name="change-password">change password</MenuItem>
+          </Submenu>
+        </Menu>
+        <div slot="trigger"></div>
+      </Sider>
+      <Layout>
+        <Content
+          :style="{ margin: '20px', background: '#fff', minHeight: '260px' }"
+        >
+          <ChangeEmail v-show="selectedTab == 'change-email'" />
+          <ChangePassword v-show="selectedTab == 'change-password'" />
+        </Content>
+      </Layout>
+    </Layout>
   </div>
 </template>
 
@@ -35,3 +61,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.ivu-layout-sider {
+  background: #fff !important;
+}
+</style>
