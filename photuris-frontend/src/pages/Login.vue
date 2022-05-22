@@ -63,33 +63,45 @@ export default {
           return;
         }
 
-        this.processLoginResponse(response);
-        this.$router.go(); // refresh page
+        this.processLoginResponse(response).then(() => this.$router.go());
       });
     },
 
     processLoginResponse(response) {
-      response.json().then((responseObject) => {
-        KeysStorageHelper.storePasswordDerivedKey(this.formValues.password);
-        this.setMasterKey();
-        this.addAuthCookie(responseObject);
+      return new Promise((resolve, reject) => {
+        response
+          .json()
+          .then((responseObject) => {
+            KeysStorageHelper.storePasswordDerivedKey(this.formValues.password);
+            this.setMasterKey().then(() => {
+              this.addAuthCookie(responseObject);
+
+              resolve();
+            });
+          })
+          .catch((err) => reject(err));
       });
     },
 
     setMasterKey() {
-      fetch(`${this.getMasterKeyEndpoint}?email=${this.formValues.email}`, {
-        method: "GET",
-        mode: "cors",
-      })
-        .then((response) => response.text())
-        .then((encryptedMasterKey) => {
-          const decryptedMasterKey = Crypto.decryptMasterKey(
-            encryptedMasterKey,
-            KeysStorageHelper.getPasswordDerivedKey()
-          );
+      return new Promise((resolve, reject) => {
+        fetch(`${this.getMasterKeyEndpoint}?email=${this.formValues.email}`, {
+          method: "GET",
+          mode: "cors",
+        })
+          .then((response) => response.text())
+          .then((encryptedMasterKey) => {
+            const decryptedMasterKey = Crypto.decryptMasterKey(
+              encryptedMasterKey,
+              KeysStorageHelper.getPasswordDerivedKey()
+            );
 
-          KeysStorageHelper.storeMasterKey(decryptedMasterKey);
-        });
+            KeysStorageHelper.storeMasterKey(decryptedMasterKey);
+
+            resolve();
+          })
+          .catch((err) => reject(err));
+      });
     },
 
     addAuthCookie(responseObject) {
