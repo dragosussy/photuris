@@ -10,5 +10,9 @@
     "changePassword": "https://localhost:7262/api/users/change-password/",
 
     "uploadPicture": "https://localhost:7262/api/pictures/upload/",
-    "getPictures": "https://localhost:7262/api/pictures/pictures/"    
+    "getPictures": "https://localhost:7262/api/pictures/pictures/",
+    
+    "getAlbumNames": "https://localhost:7262/api/albums/albumNames/",
+    "addAlbum": "https://localhost:7262/api/albums/add/",
+    "getPicturesFromAlbum": "https://localhost:7262/api/albums/"
 }

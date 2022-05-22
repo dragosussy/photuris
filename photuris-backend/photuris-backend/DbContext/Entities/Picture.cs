@@ -13,6 +13,7 @@ namespace photuris_backend.DbContext.Entities
         public string Name { get; set; }
         [Required]
         public string ImageDataBase64 { get; set; }
+        public virtual ICollection<Album> Albums { get; set; }
     }
 
     public class PicturesMetaData

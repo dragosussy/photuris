@@ -1,64 +1,99 @@
 <template>
   <div class="full-height">
-    <UploadFileInput />
-    <VirtualList
-      style="height: 95%; overflow-y: auto"
-      item-class="col-xs-6 col-md-3 col-lg-2"
-      :item-style="{ padding: '10px' }"
-      :data-key="'id'"
-      :data-sources="pictures"
-      :data-component="pictureComponent"
-      @tobottom="onScrollToBottom"
-    />
-    <div slot="footer" class="loading-spinner">Loading ...</div>
+    <Layout>
+      <Sider breakpoint="md">
+        <Menu
+          @on-select="changeSelectedTab"
+          active-name="all-pictures"
+          theme="light"
+          width="auto"
+        >
+          <MenuItem name="all-pictures">
+            <Icon type="ios-navigate"></Icon>
+            <span>all pictures</span>
+          </MenuItem>
+          <Submenu name="albums">
+            <template slot="title">
+              <Icon type="ios-navigate"></Icon>
+              albums
+            </template>
+            <div v-for="album in albumNames" :key="album.id">
+              <MenuItem :name="'album-' + album.name">{{
+                album.name
+              }}</MenuItem>
+            </div>
+            <AddAlbum />
+          </Submenu>
+        </Menu>
+        <div slot="trigger"></div>
+      </Sider>
+      <Layout>
+        <Content
+          :style="{ margin: '20px', background: '#fff', minHeight: '260px' }"
+        >
+          <AllPictures v-if="selectedTab == 'all-pictures'" />
+          <AlbumDisplay
+            albumName="test"
+            v-if="selectedTab == formattedAlbumName"
+          />
+
+          <UploadFileInput />
+        </Content>
+      </Layout>
+    </Layout>
   </div>
 </template>
 
 <script>
-import VirtualList from "vue-virtual-scroll-list";
-
 import LoginUtils from "../utilities/LoginUtils.js";
+import AllPictures from "../components/pictures-display/AllPictures.vue";
+import AlbumDisplay from "../components/pictures-display/AlbumDisplay.vue";
 import UploadFileInput from "../components/UploadFileInput.vue";
-import Picture from "../components/Picture.vue";
+import AddAlbum from "../components/AddAlbum.vue";
 
 export default {
   name: "Home",
-  components: { UploadFileInput, VirtualList },
+  components: { UploadFileInput, AllPictures, AddAlbum, AlbumDisplay },
   data() {
     return {
-      pageNumber: 1,
-      getPicturesEndpoint: window.endpoints.getPictures,
+      albumNamesEndpoint: window.endpoints.getAlbumNames,
+      selectedTab: "all-pictures",
 
-      pictureComponent: Picture,
-      pictures: [],
+      albumNames: [],
     };
   },
 
   async created() {
     if (!(await LoginUtils.isLoggedIn())) this.$router.push("/login");
+    this.albumNames = await this.getAllAlbumNames();
+  },
 
-    document.querySelector('[role="group"]').classList.add("row");
-
-    this.pictures = await this.getPage();
+  computed: {
+    formattedAlbumName() {
+      return "album-test";
+    },
   },
 
   methods: {
-    async getPage() {
-      const pictures = await fetch(
-        this.getPicturesEndpoint +
-          `${LoginUtils.getSessionCookieValue()}/${this.pageNumber}`
+    async getAllAlbumNames() {
+      return await fetch(
+        this.albumNamesEndpoint + `${LoginUtils.getSessionCookieValue()}/`
       ).then((response) => response.json());
-
-      this.pageNumber += 1;
-      return pictures;
     },
 
-    async onScrollToBottom() {
-      this.pictures = this.pictures.concat(await this.getPage());
+    changeSelectedTab(newTabName) {
+      this.selectedTab = newTabName;
     },
   },
 };
 </script>
 
-<style>
+<style scoped>
+.ivu-layout {
+  height: 100%;
+}
+
+.row {
+  width: 99.9% !important;
+}
 </style>

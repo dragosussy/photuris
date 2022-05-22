@@ -15,6 +15,7 @@ import './style/formulate.min.css';
 import './style/globals.css'
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
+import locale from 'iview/dist/locale/en-US';
 
 import endpoints from './endpoints.json'
 
@@ -22,7 +23,7 @@ Vue.config.productionTip = false;
 Vue.use(VueRouter);
 Vue.use(VueFormulate);
 Vue.use(VueCookies);
-Vue.use(iView);
+Vue.use(iView, {locale: locale});
 
 window.endpoints = endpoints;
 

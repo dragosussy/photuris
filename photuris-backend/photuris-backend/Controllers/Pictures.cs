@@ -60,7 +60,7 @@ namespace photuris_backend.Controllers
                 var pictures = _repository.Pictures
                     .Where(p => p.UserId == user.Id)
                     .AsEnumerable()
-                    .Chunk(10)
+                    .Chunk(22)
                     .Select(array => array.AsEnumerable());
 
                 var picturesList = pictures.ToList();

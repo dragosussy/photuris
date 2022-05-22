@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using photuris_backend.DbContext;
 
@@ -11,9 +12,10 @@ using photuris_backend.DbContext;
 namespace photuris_backend.Migrations
 {
     [DbContext(typeof(Repository))]
-    partial class RepositoryModelSnapshot : ModelSnapshot
+    [Migration("20220521215558_AddedAlbums")]
+    partial class AddedAlbums
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,14 +51,9 @@ namespace photuris_backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Albums");
+                    b.ToTable("Album");
                 });
 
             modelBuilder.Entity("photuris_backend.DbContext.Entities.Picture", b =>
@@ -158,17 +155,6 @@ namespace photuris_backend.Migrations
                         .HasForeignKey("PicturesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("photuris_backend.DbContext.Entities.Album", b =>
-                {
-                    b.HasOne("photuris_backend.DbContext.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
