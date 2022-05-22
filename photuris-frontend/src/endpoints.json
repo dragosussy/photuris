@@ -14,5 +14,6 @@
     
     "getAlbumNames": "https://localhost:7262/api/albums/albumNames/",
     "addAlbum": "https://localhost:7262/api/albums/add/",
-    "getPicturesFromAlbum": "https://localhost:7262/api/albums/"
+    "getPicturesFromAlbum": "https://localhost:7262/api/albums/",
+    "addPictureToAlbum": "https://localhost:7262/api/albums/addToAlbum/"
 }

@@ -40,9 +40,11 @@ namespace photuris_backend.Controllers
             try
             {
                 var user = await _usersManager.GetUser(sessionToken);
+
                 var pictures = _repository.Albums
-                    .Where(a => a.User.Id == user.Id && a.Name == albumName)
-                    .Select(a => a.Pictures)
+                    .Include(a => a.Pictures)
+                    .FirstOrDefault(a => a.User.Id == user.Id && a.Name == albumName)
+                    ?.Pictures
                     .AsEnumerable()
                     .Chunk(22)
                     .Select(array => array.AsEnumerable());
@@ -52,7 +54,9 @@ namespace photuris_backend.Controllers
                 if (pageNumber > picturesList.Count) return Ok(Enumerable.Empty<Picture[]>());
                 if (!picturesList.Any()) return Ok(Enumerable.Empty<Picture[]>());
 
-                return Ok(picturesList.ElementAt(pageNumber - 1).ToList());
+                return Ok(picturesList.ElementAt(pageNumber - 1)
+                    .Select(p => p.FromPictureEntity())
+                    .ToList());
             }
             catch (Exception e)
             {
@@ -80,6 +84,32 @@ namespace photuris_backend.Controllers
             {
                 return this.InternalServerError("bad things happened: " + e.Message);
             }
+        }
+
+        [HttpPost("AddToAlbum")]
+        public async Task<IActionResult> AddPictureToAlbum([FromBody] PictureAlbumDto pictureAlbumDto)
+        {
+            try
+            {
+                var user = await _usersManager.GetUser(pictureAlbumDto.SessionToken);
+
+                var album = await _repository.Albums.FirstOrDefaultAsync(a =>
+                    a.Name == pictureAlbumDto.AlbumName && a.User.Id == user.Id);
+                if (album == null) return BadRequest("invalid album.");
+
+                var picture = await _repository.Pictures.FirstOrDefaultAsync(p => p.Id == pictureAlbumDto.PictureId);
+                if (picture == null) return BadRequest("invalid picture.");
+
+                album.Pictures.Add(picture);
+                await _repository.SaveChangesAsync();
+
+                return Ok("picture added to album.");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
         }
     }
 }

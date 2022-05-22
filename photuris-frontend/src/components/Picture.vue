@@ -1,12 +1,16 @@
 <template>
   <div class="">
     <img :src="displayPictureFormatted" class="img-responsive" />
+    <div @click="addPictureToAlbum">
+      <Icon type="ios-add-circle-outline" size="24" /> to album
+    </div>
   </div>
 </template>
 
 <script>
 import KeysStorageHelper from "../utilities/KeysStorageHelper";
 import CryptoJs from "../utilities/Crypto";
+import LoginUtils from "../utilities/LoginUtils";
 
 export default {
   name: "Picture",
@@ -21,6 +25,7 @@ export default {
   },
   data() {
     return {
+      addPictureToAlbumEndpoint: window.endpoints.addPictureToAlbum,
       displayPictureFormatted: "",
       pictureBlob: null,
     };
@@ -53,6 +58,21 @@ export default {
 
         reader.readAsDataURL(self.pictureBlob);
       });
+    },
+
+    addPictureToAlbum() {
+      fetch(this.addPictureToAlbumEndpoint, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          pictureId: this.source.id,
+          albumName: "test",
+          sessionToken: LoginUtils.getSessionCookieValue(),
+        }),
+      }).then((response) => console.log(response));
     },
   },
 };

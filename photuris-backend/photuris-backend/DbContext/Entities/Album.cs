@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.VisualBasic;
 
 namespace photuris_backend.DbContext.Entities
 {
@@ -10,6 +12,12 @@ namespace photuris_backend.DbContext.Entities
         [Required]
         public string Name { get; set; }
         public User User { get; set; }
-        public virtual ICollection<Picture> Pictures { get; set; }
+
+        private ICollection<Picture> _pictures;
+        public virtual ICollection<Picture> Pictures
+        {
+            get => _pictures ?? (_pictures = new Collection<Picture>());
+            set => _pictures = value;
+        }
     }
 }

@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using photuris_backend.DTOs;
 
 namespace photuris_backend.DbContext.Entities
 {
@@ -13,7 +15,24 @@ namespace photuris_backend.DbContext.Entities
         public string Name { get; set; }
         [Required]
         public string ImageDataBase64 { get; set; }
-        public virtual ICollection<Album> Albums { get; set; }
+
+        private ICollection<Album> _albums;
+        public virtual ICollection<Album> Albums 
+        {
+            get => _albums ?? (_albums = new Collection<Album>());
+            set => _albums = value;
+        }
+
+        public PictureViewModel FromPictureEntity()
+        {
+            return new PictureViewModel
+            {
+                Id = this.Id,
+                Name = this.Name,
+                UserId = this.UserId,
+                ImageDataBase64 = this.ImageDataBase64
+            };
+        }
     }
 
     public class PicturesMetaData
