@@ -12,7 +12,7 @@
       @tobottom="onScrollToBottom"
     />
 
-    <div slot="footer" class="loading-spinner">Loading ...</div>
+    <Spin size="large" fix v-if="isLoading"></Spin>
   </div>
 </template>
 
@@ -36,6 +36,8 @@ export default {
 
       pictureComponent: Picture,
       pictures: [],
+
+      isLoading: true,
     };
   },
 
@@ -46,12 +48,16 @@ export default {
 
   methods: {
     async getPage() {
+      this.isLoading = true;
+
       const pictures = await fetch(
         this.getPicturesFromAlbumEndpoint +
           `${LoginUtils.getSessionCookieValue()}/${this.albumName}/${
             this.pageNumber
           }`
       ).then((response) => response.json());
+
+      this.isLoading = false;
 
       this.pageNumber += 1;
       return pictures;
