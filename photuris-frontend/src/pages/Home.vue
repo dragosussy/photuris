@@ -18,7 +18,7 @@
               albums
             </template>
             <div v-for="album in albumNames" :key="album.id">
-              <MenuItem :name="'album-' + album.name">{{
+              <MenuItem :name="'album%' + album.name">{{
                 album.name
               }}</MenuItem>
             </div>
@@ -31,10 +31,14 @@
         <Content
           :style="{ margin: '20px', background: '#fff', minHeight: '260px' }"
         >
-          <AllPictures v-if="selectedTab == 'all-pictures'" />
+          <AllPictures
+            :allAlbumNames="albumNames"
+            v-if="selectedTab == 'all-pictures'"
+          />
           <AlbumDisplay
-            albumName="test"
-            v-if="selectedTab == formattedAlbumName"
+            :allAlbumNames="albumNames"
+            :albumName="formattedAlbumName"
+            v-if="selectedTab == `album%${formattedAlbumName}`"
           />
 
           <UploadFileInput />
@@ -70,7 +74,8 @@ export default {
 
   computed: {
     formattedAlbumName() {
-      return "album-test";
+      if (this.selectedTab === "all-pictures") return "";
+      return this.selectedTab.split("album%")[1];
     },
   },
 

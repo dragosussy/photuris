@@ -30,7 +30,8 @@ namespace photuris_backend.DbContext.Entities
                 Id = this.Id,
                 Name = this.Name,
                 UserId = this.UserId,
-                ImageDataBase64 = this.ImageDataBase64
+                ImageDataBase64 = this.ImageDataBase64,
+                Albums = this.Albums.Select(a => a.FromAlbumEntity()).ToList()
             };
         }
     }

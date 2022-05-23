@@ -46,7 +46,7 @@ namespace photuris_backend.Controllers
                     .FirstOrDefault(a => a.User.Id == user.Id && a.Name == albumName)
                     ?.Pictures
                     .AsEnumerable()
-                    .Chunk(22)
+                    .Chunk(16)
                     .Select(array => array.AsEnumerable());
 
                 var picturesList = pictures.ToList();

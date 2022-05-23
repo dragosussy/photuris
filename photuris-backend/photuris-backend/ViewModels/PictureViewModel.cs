@@ -1,4 +1,5 @@
 ﻿using photuris_backend.DbContext.Entities;
+using photuris_backend.ViewModels;
 
 namespace photuris_backend.DTOs
 {
@@ -9,5 +10,6 @@ namespace photuris_backend.DTOs
         public int UserId { get; set; }
         public string ImageDataBase64 { get; set; }
         public DateTime DateCreated { get; set; }
+        public List<AlbumViewModel> Albums { get; set; }
     }
 }

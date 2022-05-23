@@ -2,6 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.VisualBasic;
+using photuris_backend.DTOs;
+using photuris_backend.ViewModels;
 
 namespace photuris_backend.DbContext.Entities
 {
@@ -18,6 +20,15 @@ namespace photuris_backend.DbContext.Entities
         {
             get => _pictures ?? (_pictures = new Collection<Picture>());
             set => _pictures = value;
+        }
+
+        public AlbumViewModel FromAlbumEntity()
+        {
+            return new AlbumViewModel()
+            {
+                Id = this.Id,
+                Name = this.Name,
+            };
         }
     }
 }

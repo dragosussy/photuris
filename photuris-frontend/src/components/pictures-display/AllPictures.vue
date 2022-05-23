@@ -8,8 +8,12 @@
       :data-key="'id'"
       :data-sources="pictures"
       :data-component="pictureComponent"
+      :extra-props="{ allAlbumNames }"
       @tobottom="onScrollToBottom"
+      :bottom-threshold="500"
     />
+
+    <Spin size="large" fix v-if="isLoading"></Spin>
   </div>
 </template>
 
@@ -24,6 +28,8 @@ export default {
 
   components: { VirtualList },
 
+  props: ["allAlbumNames"],
+
   data() {
     return {
       pageNumber: 1,
@@ -31,6 +37,8 @@ export default {
 
       pictureComponent: Picture,
       pictures: [],
+
+      isLoading: true,
     };
   },
 
@@ -41,10 +49,14 @@ export default {
 
   methods: {
     async getPage() {
+      this.isLoading = true;
+
       const pictures = await fetch(
         this.getPicturesEndpoint +
           `${LoginUtils.getSessionCookieValue()}/${this.pageNumber}`
       ).then((response) => response.json());
+
+      this.isLoading = false;
 
       this.pageNumber += 1;
       return pictures;

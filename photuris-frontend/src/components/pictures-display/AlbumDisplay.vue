@@ -8,8 +8,11 @@
       :data-key="'id'"
       :data-sources="pictures"
       :data-component="pictureComponent"
+      :extra-props="{ allAlbumNames }"
       @tobottom="onScrollToBottom"
     />
+
+    <div slot="footer" class="loading-spinner">Loading ...</div>
   </div>
 </template>
 
@@ -24,7 +27,7 @@ export default {
 
   components: { VirtualList },
 
-  props: ["albumName"],
+  props: ["albumName", "allAlbumNames"],
 
   data() {
     return {

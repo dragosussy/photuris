@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using photuris_backend.DbContext;
 using photuris_backend.DbContext.Entities;
 using photuris_backend.DTOs;
@@ -58,9 +59,10 @@ namespace photuris_backend.Controllers
             {
                 var user = await _usersManager.GetUser(sessionToken);
                 var pictures = _repository.Pictures
+                    .Include(p => p.Albums)
                     .Where(p => p.UserId == user.Id)
                     .AsEnumerable()
-                    .Chunk(22)
+                    .Chunk(16)
                     .Select(array => array.AsEnumerable());
 
                 var picturesList = pictures.ToList();
@@ -68,7 +70,9 @@ namespace photuris_backend.Controllers
                 if (pageNumber > picturesList.Count) return Ok(Enumerable.Empty<Picture[]>());
                 if (!picturesList.Any()) return Ok(Enumerable.Empty<Picture[]>());
 
-                return Ok(picturesList.ElementAt(pageNumber - 1).ToList());
+                return Ok(picturesList.ElementAt(pageNumber - 1)
+                    .Select(p => p.FromPictureEntity())
+                    .ToList());
             }
             catch (Exception e)
             {

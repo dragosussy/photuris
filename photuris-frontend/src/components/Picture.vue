@@ -1,20 +1,27 @@
 <template>
-  <div class="">
+  <Card style="min-height: 100%">
     <img :src="displayPictureFormatted" class="img-responsive" />
-    <div @click="addPictureToAlbum">
-      <Icon type="ios-add-circle-outline" size="24" /> to album
-    </div>
-  </div>
+    <AddToAlbum
+      :pictureId="this.source.id"
+      :allAlbumNames="this.allAlbumNames"
+      :selectedAlbums="this.source.albums"
+    />
+  </Card>
 </template>
 
 <script>
 import KeysStorageHelper from "../utilities/KeysStorageHelper";
 import CryptoJs from "../utilities/Crypto";
-import LoginUtils from "../utilities/LoginUtils";
+
+import AddToAlbum from "./AddToAlbum.vue";
 
 export default {
   name: "Picture",
+
+  components: { AddToAlbum },
+
   props: {
+    allAlbumNames: [],
     index: { type: Number },
     source: {
       type: Object,
@@ -23,13 +30,14 @@ export default {
       },
     },
   },
+
   data() {
     return {
-      addPictureToAlbumEndpoint: window.endpoints.addPictureToAlbum,
       displayPictureFormatted: "",
       pictureBlob: null,
     };
   },
+
   created() {
     const self = this;
 
@@ -45,6 +53,7 @@ export default {
       })
       .catch((error) => console.log(error));
   },
+
   methods: {
     formatImage() {
       const self = this;
@@ -58,21 +67,6 @@ export default {
 
         reader.readAsDataURL(self.pictureBlob);
       });
-    },
-
-    addPictureToAlbum() {
-      fetch(this.addPictureToAlbumEndpoint, {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          pictureId: this.source.id,
-          albumName: "test",
-          sessionToken: LoginUtils.getSessionCookieValue(),
-        }),
-      }).then((response) => console.log(response));
     },
   },
 };
