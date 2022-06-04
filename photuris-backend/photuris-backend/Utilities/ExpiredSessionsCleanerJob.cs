@@ -40,8 +40,7 @@ namespace photuris_backend.Utilities
                 if (repository == null) throw new Exception("cleaning sessions exception: null DbContext");
 
                 var expiredSessions = repository.Sessions.Where(s => s.ExpirationDate < DateTime.Now);
-                foreach (var expiredSession in expiredSessions)
-                    repository.Sessions.Remove(expiredSession);
+                repository.Sessions.RemoveRange(expiredSessions);
                 await repository.SaveChangesAsync();
             }
         }
