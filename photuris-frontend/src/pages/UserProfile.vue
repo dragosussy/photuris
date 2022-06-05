@@ -18,7 +18,6 @@
               change settings
             </template>
             <MenuItem name="change-email">change email</MenuItem>
-            <MenuItem name="change-password">change password</MenuItem>
           </Submenu>
         </Menu>
         <div slot="trigger"></div>
@@ -28,7 +27,6 @@
           :style="{ margin: '20px', background: '#fff', minHeight: '260px' }"
         >
           <ChangeEmail v-show="selectedTab == 'change-email'" />
-          <ChangePassword v-show="selectedTab == 'change-password'" />
         </Content>
       </Layout>
     </Layout>
@@ -39,11 +37,10 @@
 import LoginUtils from "../utilities/LoginUtils.js";
 
 import ChangeEmail from "../components/ChangeEmail.vue";
-import ChangePassword from "../components/ChangePassword.vue";
 
 export default {
   name: "UserProfile",
-  components: { ChangeEmail, ChangePassword },
+  components: { ChangeEmail },
   data() {
     return {
       selectedTab: "",
