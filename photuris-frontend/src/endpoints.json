@@ -7,7 +7,7 @@
     "getEncryptedMasterKey": "https://localhost:7262/api/authentication/getMasterKey/",
 
     "changeEmail": "https://localhost:7262/api/users/change-email/",
-    "changePassword": "https://localhost:7262/api/users/change-password/",
+    "userDetails": "https://localhost:7262/api/users/details/",
 
     "uploadPicture": "https://localhost:7262/api/pictures/upload/",
     "getPictures": "https://localhost:7262/api/pictures/pictures/",

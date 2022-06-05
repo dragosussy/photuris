@@ -117,7 +117,8 @@ namespace photuris_backend
                     Password = saltedAndHashedPassword,
                     PasswordSalt = salt,
                     HashAlgorithm = HashAlgorithmName.SHA256.ToString(),
-                    EncryptedMasterKey = registerData.EncryptedMasterKey
+                    EncryptedMasterKey = registerData.EncryptedMasterKey,
+                    DateCreated = DateTime.Now
                 });
                 await _repository.SaveChangesAsync();
 

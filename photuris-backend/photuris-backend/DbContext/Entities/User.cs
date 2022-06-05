@@ -27,5 +27,7 @@ namespace photuris_backend.DbContext.Entities
         
         [Required]
         public string EncryptedMasterKey { get; set; }
+        [Required]
+        public DateTime DateCreated { get; set; }
     }
 }

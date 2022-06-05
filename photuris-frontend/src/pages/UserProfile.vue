@@ -9,8 +9,11 @@
           width="auto"
         >
           <MenuItem name="account-details">
-            <Icon type="ios-navigate"></Icon>
-            <span>account details</span>
+            <template slot="title">
+              <Icon type="ios-navigate"></Icon>
+              user details
+            </template>
+            <MenuItem name="user-info">user details</MenuItem>
           </MenuItem>
           <Submenu name="settings">
             <template slot="title">
@@ -27,6 +30,7 @@
           :style="{ margin: '20px', background: '#fff', minHeight: '260px' }"
         >
           <ChangeEmail v-show="selectedTab == 'change-email'" />
+          <UserInfo v-show="selectedTab == 'user-info'" />
         </Content>
       </Layout>
     </Layout>
@@ -37,13 +41,14 @@
 import LoginUtils from "../utilities/LoginUtils.js";
 
 import ChangeEmail from "../components/ChangeEmail.vue";
+import UserInfo from "../components/UserInfo.vue";
 
 export default {
   name: "UserProfile",
-  components: { ChangeEmail },
+  components: { ChangeEmail, UserInfo },
   data() {
     return {
-      selectedTab: "",
+      selectedTab: "user-info",
     };
   },
 

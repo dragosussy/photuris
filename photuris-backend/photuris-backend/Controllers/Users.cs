@@ -21,6 +21,27 @@ namespace photuris_backend.Controllers
             _usersManager = usersManager;
         }
 
+        [HttpGet("details/{sessionToken}")]
+        public async Task<IActionResult> GetDetails(string sessionToken)
+        {
+            if (string.IsNullOrEmpty(sessionToken)) return Unauthorized("empty session token.");
+            User currentUser;
+            try
+            {
+                currentUser = await _usersManager.GetUser(sessionToken);
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+
+            return Ok(new UserDetailsDto
+            {
+                Email = currentUser.Email,
+                DateCreated = currentUser.DateCreated.ToString()
+            });
+        }
+
         //TODO: instead of changing email directly, send a verification to the current mail and update only after that link is clicked
         [HttpPut("change-email/{sessionToken}")]
         public async Task<IActionResult> ChangeEmail([FromBody] ChangeEmailDto newEmailDto, string sessionToken)
@@ -43,33 +64,6 @@ namespace photuris_backend.Controllers
             await _repository.SaveChangesAsync();
 
             return Ok("email changed.");
-        }
-
-        [HttpPut("change-password/{sessionToken}")]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto, string sessionToken)
-        {
-            if (changePasswordDto.NewPassword != changePasswordDto.NewPasswordConfirmation) return Unauthorized("new passwords don't match.");
-
-            User currentUser;
-            try
-            {
-                currentUser = await _usersManager.GetUser(sessionToken);
-            }
-            catch (Exception e)
-            {
-                return NotFound(e.Message);
-            }
-
-            if (PasswordHandler.EncryptPasswordSha256(currentUser.PasswordSalt,changePasswordDto.OldPassword) != currentUser.Password)
-                return Unauthorized("old password is wrong.");
-
-            currentUser.PasswordSalt = PasswordHandler.GenerateSalt(5);
-            currentUser.Password = PasswordHandler.EncryptPasswordSha256(currentUser.PasswordSalt, changePasswordDto.NewPassword);
-
-            _repository.Users.Update(currentUser);
-            await _repository.SaveChangesAsync();
-
-            return Ok("password changed.");
         }
 
         [HttpGet("current-user")]
